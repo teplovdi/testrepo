@@ -1,0 +1,28 @@
+# This will install the WURprinter on a ubuntu system
+---
+- hosts: all
+  vars:
+       mgmturl: http://www.openprinting.org/ppd-o-matic.php?driver=pxlcolor-Ricoh&printer=Ricoh-MP_C4503&show=0
+  tasks:
+   - name: Install necessary packages
+     apt: name={{item}} state=installed 
+     with_items:
+       - smbclient
+       - python-smbc
+       - python3-smbc
+       - libsmbclient
+       - cups
+   - name: Start cups
+     service:
+        name: cups
+        state: started 
+   - name: Install Printer Driver
+     get_url: url={{mgmturl}}{{ item.file }} dest={{ item.file }} mode={{ item.mode }} force=yes
+     with_items:
+         - { file: "/etc/cups/ppd/WURprinter.ppd", mode: "0644", owner: "root", group : "lp" }
+   - name: Install Printer config
+     shell: lpadmin -p WURprinter -P /etc/cups/ppd/WURprinter.ppd -D WURprinter -o device-uri=smb://scomp5170/WURprinter -o printer-is-accepting-jobs=true -o printer-is-shared=false -o printer-op-policy=Authenticated -o auth-info-required=username,password -E
+   - name: Restart cups
+     service:
+        name: cups
+        state: restarted 

@@ -1,0 +1,4 @@
+<pam_mount>
+	<volume options="domain=WUR,nodev,nosuid" user="*" mountpoint="~/M" path="Homes/%(USER)" server="WURNET.NL" fstype="cifs" />
+	<volume options="domain=WUR,nodev,nosuid" user="*" mountpoint="~/W" path="DFS-Root" server="WURNET.NL" fstype="cifs" />
+</pam_mount>

@@ -1,0 +1,26 @@
+# This will install the WURprinter on a redhat system
+---
+- hosts: all
+  vars:
+       url: http://www.openprinting.org/ppd-o-matic.php?driver=pxlcolor-Ricoh&printer=Ricoh-MP_C4503&show=0
+  tasks:
+   - name: Install necessary packages
+     yum: name={{item}} state=installed 
+     with_items:
+       - samba-client
+       - samba4-libs
+       - cups
+   - name: Install Printer Driver
+     get_url: url={{url}}{{ item.file }} dest={{ item.dest }} mode={{ item.mode }} force=yes
+     with_items:
+         - { file: "WURprinter.ppd", dest: "/etc/cups/ppd/WURprinter.ppd", mode: "0644", owner: "root", group : "lp" }
+   - name: Start cups
+     service:
+        name: cups
+        state: started 
+   - name: Install Printer config
+     shell: lpadmin -p WURprinter -P /etc/cups/ppd/WURprinter.ppd -D WURprinter -o device-uri=smb://scomp5170/WURprinter -o printer-is-accepting-jobs=true -o printer-is-shared=false -o printer-op-policy=Authenticated -o auth-info-required=username,password -E
+   - name: Restart cups
+     service:
+        name: cups
+        state: restarted 
