@@ -1,32 +1,17 @@
-# This will install pam_mount and configure it to create to drives the WURprinter on a redhat system
+# Put .pam_mount.conf.xml
 ---
 - hosts: all
   vars:
-     pam_mount_conf_xml: "{{ lookup('file', 'pam_mount.conf.xml') }}"
      home_pam_mount_conf_xml: "{{ lookup('file', '.pam_mount.conf.xml') }}"
   tasks:
      - name: Install necessary packages
-       apt: name={{item}} state=installed
-       with_items: 
-           - libpam-mount 
-           - cifs-utils
-     - copy:
-        content: "{{ pam_mount_conf_xml }}"
-        dest: "/etc/security/pam_mount.conf.xml"
-        mode: 0644
-        owner: root
-        group: root
-     - copy: 
+       copy: 
         content: "{{ home_pam_mount_conf_xml }}"
         dest: "{{ ansible_env.HOME }}/.pam_mount.conf.xml"
         mode: 0644
         owner: "{{ ansible_env.USER }}"
         group: "{{ ansible_env.USER }}"
      - file:
-        path: "{{ ansible_env.HOME }}/M"
+        path: "{{ ansible_env.HOME }}/share"
         state: directory
-        mode: 0755     
-     - file:
-        path: "{{ ansible_env.HOME }}/W"
-        state: directory
-        mode: 0755     
+        mode: 0755
