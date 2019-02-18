@@ -1,4 +1,3 @@
 <pam_mount>
-	<volume options="domain=WUR,nodev,nosuid" user="*" mountpoint="~/M" path="Homes/%(USER)" server="WURNET.NL" fstype="cifs" />
-	<volume options="domain=WUR,nodev,nosuid" user="*" mountpoint="~/W" path="DFS-Root" server="WURNET.NL" fstype="cifs" />
+<volume uid="10000-2000200000" fstype="cifs" server="dip-vrt-53.test.alt" path="sysvol" mountpoint="~/share" options="sec=krb5,cruid=%(USERUID),nounix,nodev,nosuid,uid=%(USERUID),gid=%(USERGID),file_mode=0664,dir_mode=0775" />
 </pam_mount>
